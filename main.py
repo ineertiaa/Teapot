@@ -41,33 +41,41 @@ cursor.execute(
 # auto_increment primary key makes sql make a new value automatically, like how an ID would work.
 # not null forces sql to give a value and cant be null.
 
-login_confirm = int(input("1. Login \n 2. Create account"))
+user_input = ""
+pass_input = ""
 
-if (login_confirm == 1):
-    login_user = input("enter your user.")
-    login_pass = input("enter your password.")
+def login():
+    global user_input
+    global pass_input
 
-    cursor.execute("SELECT 1 FROM users WHERE username = %s", (login_user,)) # %s is a placeholder for a variable.
+    user_input = input("Enter your username: ")
+    pass_input = input("Enter your password: ")
+
+    cursor.execute("SELECT 1 FROM users WHERE username = %s", (user_input,)) # %s is a placeholder for a variable.
 
     if (cursor.fetchone()):
-        print("found account, logging in")
+        print("Found user and logged in!")
     else:
-        print("account not found, create one.")
-elif (login_confirm == 2):
-    new_user = input("enter a unique username.")
-    new_pass = input("enter a strong password.")
+        print("didn't find user, Please try again. \n")
+        login()
 
-    createacc_dat = (new_user, new_pass)
-    createacc_insert = """INSERT INTO users (username, password) VALUES (%s, %s)"""
+def create_acc():
+    global user_input
+    global pass_input
 
-    cursor.execute(createacc_insert, createacc_dat)
-else:
-    print("Skipping...")
-    pass
+    user_input = input("Input a unique username: ")
+    pass_input = input("Input a strong password: ")
 
-test = input("make new task? (Y/n) ")
+    cursor.execute("SELECT 1 FROM users WHERE username = %s", (user_input,))
 
-if (test == "Y" or test == "y"):
+    if (cursor.fetchone()):
+        print("User already exists, Please enter a unique username. \n")
+        create_acc()
+    else:
+        cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (user_input, pass_input))
+        print("Created account successfully.")
+
+def create_task():
     title = input("enter title: ")
     description = input("enter desc: ")
     assigned_to = input("assign to: ")
@@ -81,6 +89,46 @@ if (test == "Y" or test == "y"):
     insert = """INSERT INTO tasks (title, description, assigned_to, created_by, status, priority, due_date) VALUES (%s, %s, %s, %s, %s, %s, %s)"""
 
     cursor.execute(insert, task_dat)
+
+def change_status():
+    task_title = input("Input the task title you would like to change the status of: ")
+
+    cursor.execute("SELECT 1 FROM tasks WHERE title = %s", (task_title,))
+
+    if (cursor.fetchone()):
+        print("Task found!")
+        changed_status = input("Enter what you would like the status to be changed to: ")
+        cursor.execute("UPDATE tasks SET status = %s WHERE title = %s", (changed_status, task_title))
+
+def delete_task():
+    task_title = input("Input the task title you would like to delete: ")
+
+    cursor.execute("SELECT 1 FROM tasks WHERE title = %s", (task_title,))
+
+    if (cursor.fetchone()):
+        cursor.execute("DELETE FROM tasks WHERE title = %s", (task_title,))
+        print(f"Successfully deleted {task_title}!")
+    else:
+        print("Couldn't find task name.")
+
+login_confirm = int(input("1. Login" \
+" 2. Create account "))
+
+if (login_confirm == 1):
+    login()
+else:
+    create_acc()
+
+task_confirm = int(input("1. Create task \n 2. Delete task \n 3. Change task status"))
+
+if (task_confirm == 1):
+    create_task()
+elif (task_confirm == 2):
+    delete_task()
+elif (task_confirm == 3):
+    change_status()
+else:
+    print("Please enter 1, 2 or 3.")
 
 cursor.execute("SELECT * FROM users")
 cursor.execute("SELECT * FROM tasks")
