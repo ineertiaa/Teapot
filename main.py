@@ -1,4 +1,14 @@
-import sys
 import mysql.connector
+import os
+from dotenv import load_dotenv
 
-print(sys.executable)
+load_dotenv()
+sql_pass = os.getenv("SQL_PASSWORD")
+
+database = mysql.connector.connect(
+    host="localhost",
+    user="",
+    password=sql_pass
+)
+
+print(database)
