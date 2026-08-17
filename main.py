@@ -79,12 +79,11 @@ def create_task():
     title = input("enter title: ")
     description = input("enter desc: ")
     assigned_to = input("assign to: ")
-    created_by = input("who by: ")
     status = input("status: ")
     priority = input("priority: ")
     due_date = input("due date: YYYY-MM-DD ")
 
-    task_dat = (title, description, assigned_to, created_by, status, priority, due_date)
+    task_dat = (title, description, assigned_to, user_input, status, priority, due_date)
 
     insert = """INSERT INTO tasks (title, description, assigned_to, created_by, status, priority, due_date) VALUES (%s, %s, %s, %s, %s, %s, %s)"""
 
@@ -137,7 +136,10 @@ fetched_stuff = cursor.fetchall()
 
 database.commit()
 
-for row in fetched_stuff:
+cursor.execute("SELECT * FROM tasks WHERE assigned_to = %s", (user_input,))
+cursor.execute("SELECT * FROM tasks WHERE created_by = %s", (user_input,))
+
+for row in cursor.fetchall():
     print(row)
 
 print(f"rows: {cursor.rowcount}")
