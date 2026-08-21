@@ -1,5 +1,5 @@
 import mysql.connector
-from flask import Flask
+from flask import Flask, redirect, url_for, render_template
 
 import os
 from dotenv import load_dotenv
@@ -7,11 +7,18 @@ from dotenv import load_dotenv
 load_dotenv()
 sql_pass = os.getenv("SQL_PASSWORD")
 
+username = ""
+password = ""
+
 app = Flask(__name__)
 
-@app.route("/")
-def login():
-    return "<h1>Login</h1>"
+@app.route("/", methods=["post", "get"])
+def startpage():
+    return render_template("index.html")
+
+@app.route("/home")
+def home():
+    return "<h1>Home</h1>"
 
 if (__name__ == "__main__"):
     app.run()

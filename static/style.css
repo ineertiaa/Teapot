@@ -1,0 +1,49 @@
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+
+    font-family: "Newsreader", sans-serif;
+    font-weight: 100;
+
+    background-color: rgb(208, 208, 238);
+}
+
+.login_page{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+
+    width: 400px;
+    height: 400px;
+    background-image: linear-gradient(to bottom, rgb(197, 220, 236), white, white);
+    border-radius: 10px;
+}
+.login_page h1{
+    text-shadow: 3px 3px 20px rgb(110, 152, 142);
+}
+.login_page input{
+    width: 150px;
+    height: 20px;
+
+    font-family: "Newsreader", sans-serif;
+}
+.login_page button{
+    width: 150px;
+    height: 25px;
+
+    background-color: rgb(31, 31, 31);
+    color: white;
+    font-family: "Newsreader", sans-serif;
+    border-radius: 10px;
+    border-style: none;
+
+    box-shadow: 0px 0px 0px rgb(172, 234, 232);
+    transition: 0.2s;
+}
+.login_page button:hover{
+    box-shadow: 5px 5px 30px rgb(22, 27, 29);
+}
