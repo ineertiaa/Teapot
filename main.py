@@ -1,9 +1,20 @@
 import mysql.connector
+from flask import Flask
+
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 sql_pass = os.getenv("SQL_PASSWORD")
+
+app = Flask(__name__)
+
+@app.route("/")
+def login():
+    return "<h1>Login</h1>"
+
+if (__name__ == "__main__"):
+    app.run()
 
 database = mysql.connector.connect(
     host="localhost",
@@ -17,6 +28,7 @@ cursor = database.cursor(buffered=True)
 # ** I decided to execute the commands inside of the python file itself for ease of access.
 
 # TODO: protect against sql injection attacks
+# TODO: Make it so team manager see all tasks
 
 cursor.execute(
     """CREATE TABLE IF NOT EXISTS users(
@@ -82,6 +94,11 @@ def create_task():
     status = input("status: ")
     priority = input("priority: ")
     due_date = input("due date: YYYY-MM-DD ")
+
+    cursor.execute("SELECT * FROM users WHERE username = %s", (assigned_to,))
+
+    if (not cursor.fetchone()):
+        print("didn't find user, Please try again.")
 
     task_dat = (title, description, assigned_to, user_input, status, priority, due_date)
 
