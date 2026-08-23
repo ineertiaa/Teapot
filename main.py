@@ -8,9 +8,18 @@ from dotenv import load_dotenv
 load_dotenv()
 sql_pass = os.getenv("SQL_PASSWORD")
 
+database = mysql.connector.connect(
+    host="localhost",
+    user="",
+    password=sql_pass,
+    database="teapot"
+)
+
+cursor = database.cursor(buffered=True)
+
 username = ""
 password = ""
-special_chars = re.compile(r"!@%#")
+special_chars = re.compile(r"[!@%#]")
 
 app = Flask(__name__)
 
@@ -32,10 +41,19 @@ def startpage():
             error = "Password must have at least 8 characters"
         elif (special_chars.search(password) is None):
             #TODO: fix this error showing up even though there is a special character.
-            error = "Password must contain atleast one special character"
+            error = "Password must contain atleast one special character (!@%#)"
         else:
             error = ""
             cursor.execute("INSERT INTO users(username, password) VALUES (%s, %s)", (username, password))
+
+    if (request.method == "GET"):
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        cursor.execute("SELECT 1 FROM users WHERE username = %s AND password = %s", (username, password))
+
+        if (not cursor.fetchone()):
+            error = "Username or password incorrect. Please try again."
 
     return render_template("index.html", error=error)
 
@@ -45,15 +63,6 @@ def home():
 
 if (__name__ == "__main__"):
     app.run()
-
-database = mysql.connector.connect(
-    host="localhost",
-    user="",
-    password=sql_pass,
-    database="teapot"
-)
-
-cursor = database.cursor(buffered=True)
 
 # ** I decided to execute the commands inside of the python file itself for ease of access.
 

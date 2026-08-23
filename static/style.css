@@ -15,17 +15,17 @@ body{
 .container{
     display: flex;
 
-    height: 420px;
+    height: 500px;
     width: 900px;
 
-    background-color: rgb(228, 228, 228);
-    border-radius: 5px;
+    background-color: rgb(240, 240, 240);
+    border-radius: 10px;
 
     justify-content: center;
     align-items: center;
     text-align: center;
 
-    gap: 30px;
+    gap: 40px;
 }
 
 .signup{
@@ -36,9 +36,11 @@ body{
     text-align: center;
 
     width: 400px;
-    height: 400px;
+    height: 450px;
     background-image: linear-gradient(to bottom, rgb(197, 220, 236), white, white);
     border-radius: 10px;
+
+    z-index: 9999;
 }
 .signup h1{
     text-shadow: 3px 3px 20px rgb(110, 152, 142);
@@ -74,9 +76,14 @@ body{
     text-align: center;
 
     width: 400px;
-    height: 400px;
-    background-image: linear-gradient(to bottom, rgb(197, 220, 236), white, white);
+    height: 450px;
+    background-image: linear-gradient(to bottom, rgb(198, 236, 197), white, white);
     border-radius: 10px;
+
+    opacity: 0;
+    transform: translateY(-200px);
+
+    z-index: 9999;
 }
 .login h1{
     text-shadow: 3px 3px 20px rgb(110, 152, 142);
