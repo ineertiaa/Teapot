@@ -27,11 +27,14 @@ app = Flask(__name__)
 def startpage():
     # ! Note to self: DO NOT USE GLOBAL WITH WEB!
 
-    error = ""
+    error = None
+
+    if (error == None):
+        error = ""
 
     if (request.method == "POST"):
-        username = request.form.get("username")
-        password = request.form.get("password")
+        username = request.form.get("signup_user")
+        password = request.form.get("signup_pass")
 
         cursor.execute("SELECT 1 FROM users WHERE username = %s", (username,))
 
@@ -40,15 +43,14 @@ def startpage():
         elif (len(password) < 8):
             error = "Password must have at least 8 characters"
         elif (special_chars.search(password) is None):
-            #TODO: fix this error showing up even though there is a special character.
             error = "Password must contain atleast one special character (!@%#)"
         else:
             error = ""
             cursor.execute("INSERT INTO users(username, password) VALUES (%s, %s)", (username, password))
 
-    if (request.method == "GET"):
-        username = request.form.get("username")
-        password = request.form.get("password")
+    if (request.method == "POST"):
+        username = request.form.get("login_user")
+        password = request.form.get("login_pass")
 
         cursor.execute("SELECT 1 FROM users WHERE username = %s AND password = %s", (username, password))
 
