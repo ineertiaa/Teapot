@@ -33,32 +33,37 @@ def startpage():
         error = ""
 
     if (request.method == "POST"):
-        username = request.form.get("signup_user")
-        password = request.form.get("signup_pass")
+        if ("signup_user" in request.form):
+            username = request.form.get("signup_user")
+            password = request.form.get("signup_pass")
 
-        cursor.execute("SELECT 1 FROM users WHERE username = %s", (username,))
+            cursor.execute("SELECT 1 FROM users WHERE username = %s", (username,))
 
-        if (cursor.fetchone()):
-            error = f"Username: {username} already exists! Please make a unique name."
-        elif (len(password) < 8):
-            error = "Password must have at least 8 characters"
-        elif (special_chars.search(password) is None):
-            error = "Password must contain atleast one special character (!@%#)"
-        else:
-            error = ""
-            cursor.execute("INSERT INTO users(username, password) VALUES (%s, %s)", (username, password))
-            return redirect(url_for("home"))
+            if (cursor.fetchone()):
+                error = f"Username: {username} already exists! Please make a unique name."
+            else:
+                if (not username or not password):
+                    error = "Username and password must be filled!"
+                elif (len(password) < 8):
+                    error = "Password must have at least 8 characters"
+                elif (special_chars.search(password) is None):
+                    error = "Password must contain atleast one special character (!@%#)"
+                else:
+                    error = ""
+                    cursor.execute("INSERT INTO users(username, password) VALUES (%s, %s)", (username, password))
+                    database.commit()
+                    return redirect(url_for("home"))
 
-    if (request.method == "POST"):
-        username = request.form.get("login_user")
-        password = request.form.get("login_pass")
+        elif ("login_user" in request.form):
+            username = request.form.get("login_user")
+            password = request.form.get("login_pass")
 
-        cursor.execute("SELECT 1 FROM users WHERE username = %s AND password = %s", (username, password))
+            cursor.execute("SELECT 1 FROM users WHERE username = %s AND password = %s", (username, password))
 
-        if (not cursor.fetchone()):
-            error = "Username or password incorrect. Please try again."
-        else:
-            return redirect(url_for("home"))
+            if (not cursor.fetchone()):
+                error = "Username or password incorrect. Please try again."
+            else:
+                return redirect(url_for("home"))
 
     return render_template("index.html", error=error)
 
