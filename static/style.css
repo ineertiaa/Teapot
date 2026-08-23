@@ -4,13 +4,31 @@ body{
     align-items: center;
     min-height: 100vh;
 
+    background-color: white;
+    background-size: cover;
+    background-repeat: no-repeat;
+
     font-family: "Newsreader", sans-serif;
     font-weight: 100;
-
-    background-color: rgb(208, 208, 238);
 }
 
-.login_page{
+.container{
+    display: flex;
+
+    height: 420px;
+    width: 900px;
+
+    background-color: rgb(228, 228, 228);
+    border-radius: 5px;
+
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    gap: 30px;
+}
+
+.signup{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -22,16 +40,16 @@ body{
     background-image: linear-gradient(to bottom, rgb(197, 220, 236), white, white);
     border-radius: 10px;
 }
-.login_page h1{
+.signup h1{
     text-shadow: 3px 3px 20px rgb(110, 152, 142);
 }
-.login_page input{
+.signup input{
     width: 150px;
     height: 20px;
 
     font-family: "Newsreader", sans-serif;
 }
-.login_page button{
+.signup button{
     width: 150px;
     height: 25px;
 
@@ -44,6 +62,44 @@ body{
     box-shadow: 0px 0px 0px rgb(172, 234, 232);
     transition: 0.2s;
 }
-.login_page button:hover{
+.signup button:hover{
+    box-shadow: 5px 5px 30px rgb(22, 27, 29);
+}
+
+.login{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+
+    width: 400px;
+    height: 400px;
+    background-image: linear-gradient(to bottom, rgb(197, 220, 236), white, white);
+    border-radius: 10px;
+}
+.login h1{
+    text-shadow: 3px 3px 20px rgb(110, 152, 142);
+}
+.login input{
+    width: 150px;
+    height: 20px;
+
+    font-family: "Newsreader", sans-serif;
+}
+.login button{
+    width: 150px;
+    height: 25px;
+
+    background-color: rgb(31, 31, 31);
+    color: white;
+    font-family: "Newsreader", sans-serif;
+    border-radius: 10px;
+    border-style: none;
+
+    box-shadow: 0px 0px 0px rgb(172, 234, 232);
+    transition: 0.2s;
+}
+.login button:hover{
     box-shadow: 5px 5px 30px rgb(22, 27, 29);
 }

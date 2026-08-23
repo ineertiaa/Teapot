@@ -7,29 +7,74 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='fonts.css') }}">
     </head>
     <body>
-        <div class="login_page">
-            <h1>Login</h1>
-            <h6 style="color: grey; display: flex; padding-top: -30px;">Login to Teapot with your username and password.
-                <br>
-                If you don't have an account, sign up.
-            </h6>
-
-            <br>
-
-            <form method="POST">
-                <input id="user" type="text" name="username" placeholder="Username">
+        <div class="container">
+            <div class="signup">
+                <h1>Create Account</h1>
+                <h6 style="color: grey; display: flex; padding-top: -30px; width: 300px;">Welcome to Teapot! Make a unique username and a strong password to begin.</h6>
 
                 <br>
+
+                <form method="POST">
+                    <h6 style="color: red;">{{error}}</h6>
+
+                    <input id="user" type="text" name="username" placeholder="Username">
+
+                    <br>
+                    <br>
+
+                    <input id="password" type="password" name="password" placeholder="Password">
+
+                    <br>
+                    <br>
+
+                    <button type="submit">Submit</button>
+                </form>
+                
+            </div>
+
+            <div class="login">
+                <h1>Create Account</h1>
+                <h6 style="color: grey; display: flex; padding-top: -30px; width: 300px;">Welcome to Teapot! Make a unique username and a strong password to begin.</h6>
+
                 <br>
 
-                <input id="password" type="password" name="password" placeholder="Password">
+                <form method="GET">
+                    <h6 style="color: red;">{{error}}</h6>
 
-                <br>
-                <br>
+                    <input id="user" type="text" name="username" placeholder="Username">
 
-                <button type="submit">Submit</button>
-            </form>
-            
+                    <br>
+                    <br>
+
+                    <input id="password" type="password" name="password" placeholder="Password">
+
+                    <br>
+                    <br>
+
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
         </div>
+
+        <button onclick="toLogin()">yes</button>
+
+        <script src="{{ url_for('static', filename='gsap/gsap.min.js') }}"></script>
+
+        <!-- * animations here -->
+        <script>
+            function toLogin(){
+                gsap.to(".login", {
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.3
+                })
+
+                gsap.to(".signup", {
+                    y: 200,
+                    opacity: 0,
+                    duration: 0.3
+                })
+            }
+        </script>
     </body>
 </html>

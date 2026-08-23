@@ -1,5 +1,6 @@
 import mysql.connector
-from flask import Flask, redirect, url_for, render_template
+from flask import Flask, redirect, url_for, render_template, request
+import re
 
 import os
 from dotenv import load_dotenv
@@ -9,12 +10,34 @@ sql_pass = os.getenv("SQL_PASSWORD")
 
 username = ""
 password = ""
+special_chars = re.compile(r"!@%#")
 
 app = Flask(__name__)
 
 @app.route("/", methods=["post", "get"])
 def startpage():
-    return render_template("index.html")
+    # ! Note to self: DO NOT USE GLOBAL WITH WEB!
+
+    error = ""
+
+    if (request.method == "POST"):
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        cursor.execute("SELECT 1 FROM users WHERE username = %s", (username,))
+
+        if (cursor.fetchone()):
+            error = f"Username: {username} already exists! Please make a unique name."
+        elif (len(password) < 8):
+            error = "Password must have at least 8 characters"
+        elif (special_chars.search(password) is None):
+            #TODO: fix this error showing up even though there is a special character.
+            error = "Password must contain atleast one special character"
+        else:
+            error = ""
+            cursor.execute("INSERT INTO users(username, password) VALUES (%s, %s)", (username, password))
+
+    return render_template("index.html", error=error)
 
 @app.route("/home")
 def home():
@@ -78,21 +101,10 @@ def login():
         print("didn't find user, Please try again. \n")
         login()
 
-def create_acc():
-    global user_input
-    global pass_input
+def create_acc(username, password):
 
-    user_input = input("Input a unique username: ")
-    pass_input = input("Input a strong password: ")
-
-    cursor.execute("SELECT 1 FROM users WHERE username = %s", (user_input,))
-
-    if (cursor.fetchone()):
-        print("User already exists, Please enter a unique username. \n")
-        create_acc()
-    else:
-        cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (user_input, pass_input))
-        print("Created account successfully.")
+    cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (username, password))
+    print("Created account successfully.")
 
 def create_task():
     title = input("enter title: ")
