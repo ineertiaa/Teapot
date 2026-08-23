@@ -24,7 +24,9 @@
                     <br>
                     <br>
 
-                    <input id="password" type="password" name="signup_pass" placeholder="Password">
+                    <input id="signup_pass" type="password" name="signup_pass" placeholder="Password">
+                    <br>
+                    <input type="checkbox" onclick="showPass('signup_pass')" id="showpass">
 
                     <br>
                     <br>
@@ -50,7 +52,9 @@
                     <br>
                     <br>
 
-                    <input id="password" type="password" name="login_pass" placeholder="Password">
+                    <input id="login_pass" type="password" name="login_pass" placeholder="Password">
+                    <br>
+                    <input type="checkbox" onclick="showPass('login_pass')" id="showpass">
 
                     <br>
                     <br>
@@ -62,6 +66,18 @@
         </div>
 
         <script src="{{ url_for('static', filename='gsap/gsap.min.js') }}"></script>
+
+        <script>
+            function showPass(element){
+                passW = document.getElementById(element);
+                if (passW.type === "password"){
+                    passW.type = "text";
+                }
+                else{
+                    passW.type = "password";
+                }
+            }
+        </script>
 
         <!-- * animations here -->
         <script>
