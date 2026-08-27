@@ -1,11 +1,18 @@
 .tasks{
     display: flex;
     flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
     gap: 20px;
 }
 .task{
-    width: 600px;
-
     background-color: rgb(58, 58, 58);
+    color: white;
+    font-family: "Newsreader", sans-serif;
+
     border-radius: 5px;
+    width: 200px;
+
+    text-align: center;
 }

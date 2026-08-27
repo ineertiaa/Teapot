@@ -3,6 +3,7 @@
     <head>
         <title>Home</title>
         <link rel="stylesheet" href="{{ url_for('static', filename='homestyle.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='fonts.css') }}">
     </head>
     <body>
         <div class="tasks">
@@ -16,9 +17,37 @@
                         <p>Status: {{ task[5] }}</p>
                         <p>Priority: {{ task[6] }}</p>
                         <p>Due: {{ task[7] }}</p>
+                        <br>
+                        <img src="{{ url_for('static', filename='img/trash.webp') }}" style="width: 30px; height: auto;" data-id="{{ task[0] }}" onclick="del_task(this.dataset.id)">
+                        <br>
                     </div>
                 {% endfor %}
             {% endif %}
         </div>
+
+        <script>
+            function del_task(id){
+                fetch("/api/process", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({ type: "delete", task_id: id })
+                })
+                .then(response => {
+                    if (!response.ok){
+                        throw new Error("network error!");
+                    }
+
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success){
+                        window.location.reload();
+                    }
+                })
+                .catch(e => {
+                    console.log(`Error: ${e}`)
+                })
+            }
+        </script>
     </body>
 </html>

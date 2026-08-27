@@ -1,5 +1,5 @@
 import mysql.connector
-from flask import Flask, redirect, url_for, render_template, request
+from flask import Flask, redirect, url_for, render_template, request, jsonify
 import re
 
 import os
@@ -23,6 +23,22 @@ password = ""
 special_chars = re.compile(r"[!@%#]")
 
 app = Flask(__name__)
+
+@app.route("/api/process", methods=["post"])
+def process():
+    data = request.get_json()
+
+    if (data and data.get("type") == "delete"):
+        try:
+            cursor.execute("DELETE FROM tasks WHERE id = %s", (data.get("task_id")))
+            database.commit()
+
+            return jsonify({"success": True, "message": "task deleted."}), 200
+        except Exception as e:
+            database.rollback()
+            return jsonify({"success": False, "message": f"couldn't delete task. str({e})"}), 500
+
+    return jsonify({"success": False, "error": "invalid action."}), 400
 
 @app.route("/", methods=["post", "get"])
 def startpage():
@@ -78,6 +94,8 @@ def get_tasks(user):
     except mysql.connector.Error as e:
         print(f"Error: {e}")
         return []
+
+
 
 @app.route("/home")
 def home():
