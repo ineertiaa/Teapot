@@ -36,7 +36,7 @@ body{
     text-align: center;
 
     width: 400px;
-    height: 450px;
+    height: 480px;
     background-image: linear-gradient(to bottom, rgb(197, 220, 236), white, white);
     border-radius: 10px;
 
@@ -76,7 +76,7 @@ body{
     text-align: center;
 
     width: 400px;
-    height: 450px;
+    height: 480px;
     background-image: linear-gradient(to bottom, rgb(198, 236, 197), white, white);
     border-radius: 10px;
 
@@ -109,4 +109,14 @@ body{
 }
 .login button:hover{
     box-shadow: 5px 5px 30px rgb(22, 27, 29);
+}
+
+.signup img{
+    width: 30px;
+    height: auto;
+}
+
+.login img{
+    width: 30px;
+    height: auto;
 }

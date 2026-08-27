@@ -4,6 +4,7 @@ import re
 
 import os
 from dotenv import load_dotenv
+import sched, time
 
 load_dotenv()
 sql_pass = os.getenv("SQL_PASSWORD")
@@ -67,17 +68,32 @@ def startpage():
 
     return render_template("index.html", error=error)
 
+def get_tasks(user):
+    try:
+        cursor.execute("SELECT * FROM tasks WHERE assigned_to = %s OR created_by = %s", (user, user))
+
+        tasks = cursor.fetchall()
+
+        return tasks
+    except mysql.connector.Error as e:
+        print(f"Error: {e}")
+        return []
+
 @app.route("/home")
 def home():
-    return "<h1>Home</h1>"
+    print(f"rows: {cursor.rowcount}")
+
+    fetched_tasks = get_tasks("ryan")
+
+    return render_template("home.html", tasks=fetched_tasks)
 
 if (__name__ == "__main__"):
     app.run()
 
 # ** I decided to execute the commands inside of the python file itself for ease of access.
 
-# TODO: protect against sql injection attacks
 # TODO: Make it so team manager see all tasks
+# TODO: Add task adding to the html page
 
 cursor.execute(
     """CREATE TABLE IF NOT EXISTS users(
@@ -99,14 +115,5 @@ cursor.execute(
     due_date DATE NOT NULL
     )"""
 )
-# auto_increment primary key makes sql make a new value automatically, like how an ID would work.
-# not null forces sql to give a value and cant be null.
-
-fetched_stuff = cursor.fetchall()
 
 database.commit()
-
-for row in cursor.fetchall():
-    print(row)
-
-print(f"rows: {cursor.rowcount}")

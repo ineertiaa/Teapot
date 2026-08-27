@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Home</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='homestyle.css') }}">
+    </head>
+    <body>
+        <div class="tasks">
+            {% if tasks %}
+                {% for task in tasks %}
+                    <div class="task">
+                        <h2>{{ task[1] }}</h2>
+                        <p>{{ task[2] }}</p>
+                        <p>Assigned to: {{ task[3] }}</p>
+                        <p>Made by: {{ task[4] }}</p>
+                        <p>Status: {{ task[5] }}</p>
+                        <p>Priority: {{ task[6] }}</p>
+                        <p>Due: {{ task[7] }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </body>
+</html>

@@ -1,0 +1,11 @@
+.tasks{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+.task{
+    width: 600px;
+
+    background-color: rgb(58, 58, 58);
+    border-radius: 5px;
+}

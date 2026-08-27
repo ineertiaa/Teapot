@@ -26,8 +26,9 @@
 
                     <input id="signup_pass" type="password" name="signup_pass" placeholder="Password">
                     <br>
-                    <input type="checkbox" onclick="showPass('signup_pass')" id="showpass">
+                    <img src="{{ url_for('static', filename='Img/view.png') }}" onclick="showPass('signup_pass', 'signup_toggle')" id="signup_toggle">
 
+                    <br>
                     <br>
                     <br>
 
@@ -54,8 +55,9 @@
 
                     <input id="login_pass" type="password" name="login_pass" placeholder="Password">
                     <br>
-                    <input type="checkbox" onclick="showPass('login_pass')" id="showpass">
+                    <img src="{{ url_for('static', filename='Img/view.png') }}" onclick="showPass('login_pass', 'login_toggle')" id="login_toggle">
 
+                    <br>
                     <br>
                     <br>
 
@@ -68,13 +70,16 @@
         <script src="{{ url_for('static', filename='gsap/gsap.min.js') }}"></script>
 
         <script>
-            function showPass(element){
+            function showPass(element, parent){
                 passW = document.getElementById(element);
+                par = document.getElementById(parent);
                 if (passW.type === "password"){
                     passW.type = "text";
+                    par.src = "{{ url_for('static', filename='img/hide.png') }}"
                 }
                 else{
                     passW.type = "password";
+                    par.src = "{{ url_for('static', filename='img/view.png') }}"
                 }
             }
         </script>
