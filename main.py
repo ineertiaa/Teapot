@@ -30,7 +30,7 @@ def process():
 
     if (data and data.get("type") == "delete"):
         try:
-            cursor.execute("DELETE FROM tasks WHERE id = %s", (data.get("task_id")))
+            cursor.execute("DELETE FROM tasks WHERE id = %s", (data.get("task_id"),))
             database.commit()
 
             return jsonify({"success": True, "message": "task deleted."}), 200
