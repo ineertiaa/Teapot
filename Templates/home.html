@@ -28,8 +28,30 @@
         </div>
 
         <div style="display: flex; align-items: center; justify-content: center; padding-top: 30px;">
-            <button style="font-size: 50px; border-radius: 5px; border-style: none; margin: 0 auto;"><i class="fa-solid fa-plus"></i></button>
+            <button style="font-size: 50px; border-radius: 5px; border-style: none; margin: 0 auto;"><i class="fa-solid fa-plus" onclick="openclose_modal(true)"></i></button>
         </div>
+
+        <!-- TODO: Make task making modal-->
+
+        <form class="task_modal">
+            <h1>Make new task</h1>
+            
+            <br>
+
+            <input type="text" name="title" placeholder="Title">
+            <input type="text" name="description" placeholder="Description">
+
+            <input type="text" name="assigned_to" placeholder="Assign to (username)">
+            <input type="text" name="priority" placeholder="Priority">
+
+            <input type="date" name="due_date" placeholder="Due Date">
+
+            <br>
+
+            <button type="submit">Ok!</button>
+        </form>
+
+        <script src="{{ url_for('static', filename='gsap/gsap.min.js') }}"></script>
 
         <script>
             function del_task(id){
@@ -53,6 +75,23 @@
                 .catch(e => {
                     console.log(`Error: ${e}`)
                 })
+            }
+        </script>
+
+        <script>
+            gsap.set(".task_modal", {
+                xPercent: -50,
+                yPercent: 50,
+                y: -200
+            })
+
+            function openclose_modal(open){
+                if (open){
+                    gsap.to(".task_modal", {
+                        opacity: 1,
+                        duration: 0.3
+                    })
+                }
             }
         </script>
     </body>

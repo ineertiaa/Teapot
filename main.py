@@ -1,10 +1,9 @@
 import mysql.connector
-from flask import Flask, redirect, url_for, render_template, request, jsonify
+from flask import Flask, redirect, url_for, render_template, request, jsonify, session
 import re
 
 import os
 from dotenv import load_dotenv
-import sched, time
 
 load_dotenv()
 sql_pass = os.getenv("SQL_PASSWORD")
@@ -54,6 +53,8 @@ def startpage():
             username = request.form.get("signup_user")
             password = request.form.get("signup_pass")
 
+            session["username"] = username
+
             cursor.execute("SELECT 1 FROM users WHERE username = %s", (username,))
 
             if (cursor.fetchone()):
@@ -97,11 +98,22 @@ def get_tasks(user):
 
 
 
-@app.route("/home")
+@app.route("/home", methods=["post"])
 def home():
     print(f"rows: {cursor.rowcount}")
 
     fetched_tasks = get_tasks("ryan")
+
+    if (request.method == "POST"):
+        if ("title" in request.form):
+            new_title = request.form.get("title")
+            new_desc = request.form.get("description")
+            assigned = request.form.get("assigned_to")
+            priority = request.form.get("priority")
+            due = request.form.get("due_date")
+
+            cursor.execute("INSERT INTO tasks(title, description, assigned_to, created_by, status, priority, due_date) VALUES (%s, %s, %s, %s, %s, %s, %s)", (new_title, new_desc, assigned, session.get("username"), False, priority, due))
+            database.commit()
 
     return render_template("home.html", tasks=fetched_tasks)
 
@@ -128,7 +140,7 @@ cursor.execute(
     description VARCHAR(255) NOT NULL,
     assigned_to VARCHAR(100) NOT NULL,
     created_by VARCHAR(255) NOT NULL,
-    status VARCHAR(50) NOT NULL,
+    status BOOL NOT NULL,
     priority VARCHAR(50) NOT NULL,
     due_date DATE NOT NULL
     )"""
