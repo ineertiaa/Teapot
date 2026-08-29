@@ -79,20 +79,38 @@
         </script>
 
         <script>
-            gsap.set(".task_modal", {
-                xPercent: -50,
-                yPercent: 50,
-                y: -200
-            })
-
             function openclose_modal(open){
+                const modal = document.querySelector(".task_modal");
                 if (open){
-                    gsap.to(".task_modal", {
-                        opacity: 1,
-                        duration: 0.3
-                    })
+                    modal.classList.add("active");
+                } else {
+                    modal.classList.remove("active");
                 }
             }
+
+            // Close modal when clicking outside
+            document.addEventListener("click", (e) => {
+                const modal = document.querySelector(".task_modal");
+                if (modal && !modal.contains(e.target) && !e.target.closest("button")){
+                    openclose_modal(false);
+                }
+            });
+
+            // Handle form submission
+            document.querySelector(".task_modal").addEventListener("submit", (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const data = Object.fromEntries(formData);
+                
+                fetch("/home", {
+                    method: "POST",
+                    body: new URLSearchParams(data)
+                })
+                .then(() => {
+                    window.location.reload();
+                })
+                .catch(err => console.log(`Error: ${err}`));
+            });
         </script>
     </body>
 </html>

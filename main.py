@@ -1,6 +1,7 @@
 import mysql.connector
 from flask import Flask, redirect, url_for, render_template, request, jsonify, session
 import re
+import secrets
 
 import os
 from dotenv import load_dotenv
@@ -22,6 +23,7 @@ password = ""
 special_chars = re.compile(r"[!@%#]")
 
 app = Flask(__name__)
+app.secret_key = os.getenv("FLASK_SECRET")
 
 @app.route("/api/process", methods=["post"])
 def process():
@@ -81,6 +83,7 @@ def startpage():
             if (not cursor.fetchone()):
                 error = "Username or password incorrect. Please try again."
             else:
+                session["username"] = username
                 return redirect(url_for("home"))
 
     return render_template("index.html", error=error)
@@ -98,11 +101,11 @@ def get_tasks(user):
 
 
 
-@app.route("/home", methods=["post"])
+@app.route("/home", methods=["post", "get"])
 def home():
     print(f"rows: {cursor.rowcount}")
 
-    fetched_tasks = get_tasks("ryan")
+    fetched_tasks = get_tasks(session.get("username"))
 
     if (request.method == "POST"):
         if ("title" in request.form):
