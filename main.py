@@ -16,8 +16,6 @@ database = mysql.connector.connect(
     database="teapot"
 )
 
-cursor = database.cursor(buffered=True)
-
 username = ""
 password = ""
 special_chars = re.compile(r"[!@%#]")
@@ -28,26 +26,45 @@ app.secret_key = os.getenv("FLASK_SECRET")
 @app.route("/api/process", methods=["post"])
 def process():
     data = request.get_json()
+    cursor = database.cursor(buffered=True)
 
     if (data and data.get("type") == "delete"):
         try:
             cursor.execute("DELETE FROM tasks WHERE id = %s", (data.get("task_id"),))
             database.commit()
+            cursor.close()
 
             return jsonify({"success": True, "message": "task deleted."}), 200
         except Exception as e:
             database.rollback()
+            cursor.close()
             return jsonify({"success": False, "message": f"couldn't delete task. str({e})"}), 500
 
     if (data and data.get("type") == "login"):
         try:
             cursor.execute("SELECT 1 FROM users WHERE username = %s AND password = %s", (username, password)) # to protect against injections.
             database.commit()
+            cursor.close()
 
             return jsonify({"success": True, "message": "logged in!"}), 200
         except Exception as e:
             database.rollback()
+            cursor.close()
             return jsonify({"success": False, "message": f"couldn't login :( str({e})"}), 500
+
+    if (data and data.get("type") == "markdone"):
+        try:
+            cursor.execute("SELECT 1 FROM tasks WHERE id = %s", (data.get("task_id"),))
+            if (cursor.fetchone()):
+                status_value = 1 if data.get("done") else 0
+                cursor.execute("UPDATE tasks SET status = %s WHERE id = %s", (status_value, data.get("task_id")))
+                database.commit()
+                cursor.close()
+                return jsonify({"success": True, "message": "set status!"}), 200
+        except Exception as e:
+            database.rollback()
+            cursor.close()
+            return jsonify({"success": False, "message": f"couldn't set status :( str({e})"}), 500
 
 @app.route("/", methods=["post", "get"])
 def startpage():
@@ -65,6 +82,7 @@ def startpage():
 
             session["username"] = username
 
+            cursor = database.cursor(buffered=True)
             cursor.execute("SELECT 1 FROM users WHERE username = %s", (username,))
 
             if (cursor.fetchone()):
@@ -80,27 +98,36 @@ def startpage():
                     error = ""
                     cursor.execute("INSERT INTO users(username, password) VALUES (%s, %s)", (username, password))
                     database.commit()
+                    cursor.close()
                     return redirect(url_for("home"))
+            
+            cursor.close()
 
         elif ("login_user" in request.form):
             username = request.form.get("login_user")
             password = request.form.get("login_pass")
 
+            cursor = database.cursor(buffered=True)
             cursor.execute("SELECT 1 FROM users WHERE username = %s AND password = %s", (username, password))
 
             if (not cursor.fetchone()):
                 error = "Username or password incorrect. Please try again."
             else:
                 session["username"] = username
+                cursor.close()
                 return redirect(url_for("home"))
+            
+            cursor.close()
 
     return render_template("index.html", error=error)
 
 def get_tasks(user):
     try:
+        cursor = database.cursor(buffered=True)
         cursor.execute("SELECT * FROM tasks WHERE assigned_to = %s OR created_by = %s", (user, user))
 
         tasks = cursor.fetchall()
+        cursor.close()
 
         return tasks
     except mysql.connector.Error as e:
@@ -111,8 +138,6 @@ def get_tasks(user):
 
 @app.route("/home", methods=["post", "get"])
 def home():
-    print(f"rows: {cursor.rowcount}")
-
     fetched_tasks = get_tasks(session.get("username"))
 
     if (request.method == "POST"):
@@ -123,8 +148,13 @@ def home():
             priority = request.form.get("priority")
             due = request.form.get("due_date")
 
+            cursor = database.cursor(buffered=True)
             cursor.execute("INSERT INTO tasks(title, description, assigned_to, created_by, status, priority, due_date) VALUES (%s, %s, %s, %s, %s, %s, %s)", (new_title, new_desc, assigned, session.get("username"), False, priority, due))
             database.commit()
+            cursor.close()
+            
+            # Re-fetch tasks after creating new one
+            fetched_tasks = get_tasks(session.get("username"))
 
     return render_template("home.html", tasks=fetched_tasks)
 
@@ -135,6 +165,8 @@ if (__name__ == "__main__"):
 
 # TODO: Make it so team manager see all tasks
 # TODO: Add task adding to the html page
+
+cursor = database.cursor(buffered=True)
 
 cursor.execute(
     """CREATE TABLE IF NOT EXISTS users(
@@ -158,3 +190,4 @@ cursor.execute(
 )
 
 database.commit()
+cursor.close()

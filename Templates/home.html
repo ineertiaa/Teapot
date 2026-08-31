@@ -18,7 +18,7 @@
                         <p>{{ task[2] }}</p>
                         <p>Assigned to: {{ task[3] }}</p>
                         <p>Made by: {{ task[4] }}</p>
-                        <p>Status: {{ task[5] }}</p>
+                        <input type="checkbox" onclick="markdone(this)" data-id="{{ task[0] }}" {% if task[5] in ('1', 1, True, 'done') %}checked{% endif %}>Done
                         <p>Priority: {{ task[6] }}</p>
                         <p>Due: {{ task[7] }}</p>
                         <br>
@@ -52,6 +52,33 @@
         </form>
 
         <script src="{{ url_for('static', filename='gsap/gsap.min.js') }}"></script>
+
+        <script>
+            function markdone(element){
+                id = element.dataset.id;
+
+                fetch("/api/process", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({ type: "markdone", task_id: id, done:  element.checked})
+                })
+                .then(response => {
+                    if (!response.ok){
+                        throw new Error("network error!");
+                    }
+
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success){
+                        window.location.reload();
+                    }
+                })
+                .catch(e => {
+                    console.log(`Error: ${e}`)
+                })
+            }
+        </script>
 
         <script>
             function del_task(id){

@@ -44,7 +44,7 @@
 
             <br>
 
-            <form method="POST" onsubmit="save_info(event)" id="login_form">
+            <form method="POST" id="login_form">
                 <h6 style="color: red;">{{error}}</h6>
 
                 <input id="login_user" type="text" name="login_user" placeholder="Username">
@@ -68,20 +68,16 @@
         <script src="{{ url_for('static', filename='gsap/gsap.min.js') }}"></script>
 
         <script>
-            function save_info(e){
-                e.preventDefault();
-
+            document.getElementById("login_form").addEventListener("submit", (e) => {
                 localStorage.setItem("username", document.getElementById("login_user").value);
                 localStorage.setItem("password", document.getElementById("login_pass").value);
-
-                window.location.href = "/home"
-            }
+            });
 
             window.addEventListener("DOMContentLoaded", () => {
                 const gotuser = localStorage.getItem("username");
                 const gotpass = localStorage.getItem("password");
 
-                if (gotuser != "" && gotpass != ""){
+                if ((gotuser != "" && gotpass != "") && (gotuser != null && gotpass != null)){
                     document.getElementById("login_user").value = gotuser;
                     document.getElementById("login_pass").value = gotpass;
 
