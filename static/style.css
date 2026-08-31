@@ -75,6 +75,7 @@ body{
     flex-direction: column;
     text-align: center;
 
+
     width: 400px;
     height: 480px;
     background-image: linear-gradient(to bottom, rgb(198, 236, 197), white, white);

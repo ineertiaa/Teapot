@@ -8,6 +8,8 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha512-QeR2VH+lsBE5LSAe1Q5EnTBbe7XTBubt8dG93Y7gidSgdMCr8nVqKcfKAMyN96SV8KDbZVTDXChatu5G2KQGzg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     </head>
     <body>
+        <button style="background-color: red; width: 80px; height: 25px; position: absolute; right: 10px; border-style: none; border-radius: 5px; color: white;" onclick="logout()">Logout</button>
+
         <div class="tasks">
             {% if tasks %}
                 {% for task in tasks %}
@@ -30,8 +32,6 @@
         <div style="display: flex; align-items: center; justify-content: center; padding-top: 30px;">
             <button style="font-size: 50px; border-radius: 5px; border-style: none; margin: 0 auto;"><i class="fa-solid fa-plus" onclick="openclose_modal(true)"></i></button>
         </div>
-
-        <!-- TODO: Make task making modal-->
 
         <form class="task_modal">
             <h1>Make new task</h1>
@@ -79,6 +79,15 @@
         </script>
 
         <script>
+            function logout(){
+                localStorage.removeItem("username");
+                localStorage.removeItem("password");
+
+                window.location.href = "/";
+            }
+        </script>
+
+        <script>
             function openclose_modal(open){
                 const modal = document.querySelector(".task_modal");
                 if (open){
@@ -88,7 +97,6 @@
                 }
             }
 
-            // Close modal when clicking outside
             document.addEventListener("click", (e) => {
                 const modal = document.querySelector(".task_modal");
                 if (modal && !modal.contains(e.target) && !e.target.closest("button")){
@@ -96,7 +104,6 @@
                 }
             });
 
-            // Handle form submission
             document.querySelector(".task_modal").addEventListener("submit", (e) => {
                 e.preventDefault();
                 const formData = new FormData(e.target);

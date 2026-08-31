@@ -39,7 +39,15 @@ def process():
             database.rollback()
             return jsonify({"success": False, "message": f"couldn't delete task. str({e})"}), 500
 
-    return jsonify({"success": False, "error": "invalid action."}), 400
+    if (data and data.get("type") == "login"):
+        try:
+            cursor.execute("SELECT 1 FROM users WHERE username = %s AND password = %s", (username, password)) # to protect against injections.
+            database.commit()
+
+            return jsonify({"success": True, "message": "logged in!"}), 200
+        except Exception as e:
+            database.rollback()
+            return jsonify({"success": False, "message": f"couldn't login :( str({e})"}), 500
 
 @app.route("/", methods=["post", "get"])
 def startpage():
