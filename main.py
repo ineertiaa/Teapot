@@ -1,13 +1,66 @@
-import mysql.connector
-from flask import Flask, redirect, url_for, render_template, request, jsonify, session
+# This is my first try at using both MySQL and Flask to make an app.
+# Please be patient if the code is messy, i've tried my best to add comments where I could.
+
+# Sincerely,
+# Ryan.
+
 import re
-import secrets
 
 import os
-from dotenv import load_dotenv
+import platform
+
+if (platform.system().startswith("Windows")):
+    try:
+        import requests
+    except ImportError:
+        os.system("python -m pip install requests -q -q -q") # os.system is deprecated. If it works, it works.
+        import requests
+    try:
+        from dotenv import load_dotenv
+    except ImportError:
+        os.system("python -m pip install python-dotenv -q -q -q")
+        from dotenv import load_dotenv
+    try:
+        from flask import Flask, redirect, url_for, render_template, request, jsonify, session
+    except ImportError:
+        os.system("python -m pip install flask -q -q -q")
+        from flask import Flask, redirect, url_for, render_template, request, jsonify, session
+    try:
+        import mysql.connector
+    except ImportError:
+        os.system("python -m pip install mysql -q -q -q")
+        import mysql.connector
+else: # just going to assume that every other OS that isn't windows uses python3.
+    try:
+        import requests
+    except ImportError:
+        os.system("python3 -m pip install requests -q -q -q")
+        import requests
+    try:
+        from dotenv import load_dotenv
+    except ImportError:
+        os.system("python3 -m pip install python-dotenv -q -q -q")
+        from dotenv import load_dotenv
+    try:
+        from flask import Flask, redirect, url_for, render_template, request, jsonify, session
+    except ImportError:
+        os.system("python3 -m pip install flask -q -q -q")
+        from flask import Flask, redirect, url_for, render_template, request, jsonify, session
+    try:
+        import mysql.connector
+    except ImportError:
+        os.system("python3 -m pip install mysql -q -q -q")
+        import mysql.connector
+
+app = Flask(__name__)
+
+# ! CONTRIBUTORS, PLEASE READ !
+# * make sure to add a .env file with these variables.
+# ('FLASK_SECRET' can be any 32 bit string.)
 
 load_dotenv()
 sql_pass = os.getenv("SQL_PASSWORD")
+app.secret_key = os.getenv("FLASK_SECRET")
 
 database = mysql.connector.connect(
     host="localhost",
@@ -20,9 +73,7 @@ username = ""
 password = ""
 special_chars = re.compile(r"[!@%#]")
 
-app = Flask(__name__)
-app.secret_key = os.getenv("FLASK_SECRET")
-
+# * this function is for the home.html and this script to be able to 'contact' eachother.
 @app.route("/api/process", methods=["post"])
 def process():
     data = request.get_json()
@@ -75,6 +126,7 @@ def startpage():
     if (error == None):
         error = ""
 
+    # here is the form and password safety checking.
     if (request.method == "POST"):
         if ("signup_user" in request.form):
             username = request.form.get("signup_user")
@@ -162,9 +214,6 @@ if (__name__ == "__main__"):
     app.run()
 
 # ** I decided to execute the commands inside of the python file itself for ease of access.
-
-# TODO: Make it so team manager see all tasks
-# TODO: Add task adding to the html page
 
 cursor = database.cursor(buffered=True)
 
