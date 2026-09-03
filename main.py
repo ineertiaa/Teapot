@@ -205,7 +205,6 @@ def home():
             database.commit()
             cursor.close()
             
-            # Re-fetch tasks after creating new one
             fetched_tasks = get_tasks(session.get("username"))
 
     return render_template("home.html", tasks=fetched_tasks)
