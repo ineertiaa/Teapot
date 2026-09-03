@@ -121,6 +121,9 @@ def process():
 def startpage():
     # ! Note to self: DO NOT USE GLOBAL WITH WEB!
 
+    if (session.get("username")):
+        return redirect(url_for("home"))
+
     error = None
 
     if (error == None):
@@ -208,6 +211,11 @@ def home():
             fetched_tasks = get_tasks(session.get("username"))
 
     return render_template("home.html", tasks=fetched_tasks)
+
+@app.route("/logout")
+def logout():
+    session.pop("username", None)
+    return redirect(url_for("startpage"))
 
 if (__name__ == "__main__"):
     app.run()

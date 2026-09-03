@@ -68,25 +68,6 @@
         <script src="{{ url_for('static', filename='gsap/gsap.min.js') }}"></script>
 
         <script>
-            document.getElementById("login_form").addEventListener("submit", (e) => {
-                localStorage.setItem("username", document.getElementById("login_user").value);
-                localStorage.setItem("password", document.getElementById("login_pass").value);
-            });
-
-            window.addEventListener("DOMContentLoaded", () => {
-                const gotuser = localStorage.getItem("username");
-                const gotpass = localStorage.getItem("password");
-
-                if ((gotuser != "" && gotpass != "") && (gotuser != null && gotpass != null)){
-                    document.getElementById("login_user").value = gotuser;
-                    document.getElementById("login_pass").value = gotpass;
-
-                    document.getElementById("login_form").submit();
-                }
-            })
-        </script>
-
-        <script>
             function showPass(element, parent){
                 passW = document.getElementById(element);
                 par = document.getElementById(parent);
